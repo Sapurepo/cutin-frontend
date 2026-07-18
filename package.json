@@ -1,0 +1,35 @@
+{
+  "name": "cutin-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A monorepo for the cutin-frontend applications and packages.",
+  "author": "",
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:admin": "turbo run dev --filter=@cutin/admin",
+    "dev:mobile": "turbo run dev --filter=@cutin/mobile",
+    "build": "turbo run build",
+    "lint": "eslint .",
+    "typecheck": "turbo run typecheck",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mjs,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mjs,json,css,md}\"",
+    "test": "vitest run",
+    "check": "pnpm lint && pnpm typecheck && pnpm format:check && pnpm test && pnpm build"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.6",
+    "jsdom": "^29.1.1",
+    "prettier": "^3",
+    "prettier-plugin-tailwindcss": "^0.8.0",
+    "turbo": "^2",
+    "vitest": "^4.1.6"
+  },
+  "packageManager": "pnpm@11.1.0",
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=11.1.0"
+  }
+}

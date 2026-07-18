@@ -1,0 +1,129 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@cutin/tokens/styles/tokens.css";
+
+@source "../components";
+
+/* CUTIN 모노크롬 팔레트 — 위계는 fill/outline/weight/size로 만들고 hue로 만들지 않는다.
+ * 유일한 유채색은 destructive(시스템 레드)이며 알림/긴급 용도로만 opt-in. */
+@theme {
+  --font-sans:
+    var(--font-pretendard), ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-latin: var(--font-geist), var(--font-pretendard), sans-serif;
+
+  /* 모노크롬 램프 — primary/secondary/neutral 모두 동일 잉크 스케일을 쓴다 */
+  --color-primary-50: #fafaf8;
+  --color-primary-100: #f2f2ee;
+  --color-primary-200: #e6e6e2;
+  --color-primary-400: #c9c9c4;
+  --color-primary-600: #9a9a95;
+  --color-primary-800: #3a3a3e;
+  --color-primary-900: #0a0a0b;
+
+  --color-secondary-50: #fafaf8;
+  --color-secondary-100: #f2f2ee;
+  --color-secondary-200: #e6e6e2;
+  --color-secondary-400: #c9c9c4;
+  --color-secondary-600: #9a9a95;
+  --color-secondary-800: #3a3a3e;
+  --color-secondary-900: #0a0a0b;
+
+  --color-neutral-10: #fdfdfc;
+  --color-neutral-50: #fafaf8;
+  --color-neutral-100: #f2f2ee;
+  --color-neutral-200: #e6e6e2;
+  --color-neutral-400: #c9c9c4;
+  --color-neutral-600: #9a9a95;
+  --color-neutral-800: #3a3a3e;
+  --color-neutral-900: #0a0a0b;
+
+  /* Base */
+  --color-background: #fafaf8;
+  --color-foreground: #0a0a0b;
+
+  /* Surface */
+  --color-card: #ffffff;
+  --color-card-foreground: #0a0a0b;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0a0a0b;
+
+  /* Brand — accent = ink fill */
+  --color-primary: #0a0a0b;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f2f2ee;
+  --color-secondary-foreground: #0a0a0b;
+  --color-neutral: #0a0a0b;
+  --color-neutral-foreground: #ffffff;
+
+  /* UI state */
+  --color-muted: #f2f2ee;
+  --color-muted-foreground: #9a9a95;
+  --color-accent: #f2f2ee;
+  --color-accent-foreground: #0a0a0b;
+  --color-destructive: #ff3b30;
+  --color-destructive-foreground: #ffffff;
+  --color-success: #0a0a0b;
+
+  /* Form */
+  --color-border: #e6e6e2;
+  --color-input: #c9c9c4;
+  --color-ring: rgba(10, 10, 11, 0.12);
+
+  /* Radii — CUTIN 스케일 (xs6/sm10/md14/lg20) */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
+}
+
+.dark,
+[data-theme="dark"] {
+  /* Base */
+  --color-background: #0a0a0b;
+  --color-foreground: #f5f5f4;
+
+  /* Surface */
+  --color-card: #161618;
+  --color-card-foreground: #f5f5f4;
+  --color-popover: #161618;
+  --color-popover-foreground: #f5f5f4;
+
+  /* Brand */
+  --color-primary: #f5f5f4;
+  --color-primary-foreground: #0a0a0b;
+  --color-secondary: #1e1e21;
+  --color-secondary-foreground: #f5f5f4;
+  --color-neutral: #f5f5f4;
+  --color-neutral-foreground: #0a0a0b;
+
+  /* UI state */
+  --color-muted: #1e1e21;
+  --color-muted-foreground: #7a7a7e;
+  --color-accent: #1e1e21;
+  --color-accent-foreground: #f5f5f4;
+  --color-destructive: #ff453a;
+  --color-destructive-foreground: #ffffff;
+  --color-success: #f5f5f4;
+
+  /* Form */
+  --color-border: #232327;
+  --color-input: #3a3a3e;
+  --color-ring: rgba(245, 245, 244, 0.16);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50 tracking-tight;
+  }
+  body {
+    @apply bg-background text-foreground font-sans leading-normal;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}

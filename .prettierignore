@@ -1,0 +1,8 @@
+.next
+.turbo
+dist
+node_modules
+pnpm-lock.yaml
+# MSW가 생성하는 service worker 스크립트(직접 수정하지 않음).
+**/public/mockServiceWorker.js
+.expo/

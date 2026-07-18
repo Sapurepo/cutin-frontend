@@ -1,0 +1,29 @@
+{
+  "name": "@cutin/api",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --root ../.. packages/api/src --passWithNoTests"
+  },
+  "dependencies": {
+    "@cutin/types": "workspace:*"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5"
+  },
+  "devDependencies": {
+    "@tanstack/react-query": "^5",
+    "typescript": "^5"
+  }
+}
