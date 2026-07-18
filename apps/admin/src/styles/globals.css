@@ -1,0 +1,20 @@
+@import "tailwindcss";
+@import "@cutin/ui/styles/globals.css";
+@plugin "@tailwindcss/typography";
+
+/**
+    * 높이 기준 변형 (width 브레이크포인트와 별개)
+    * 세로가 짧은 화면(가로모드 등)에서 간격 압축·비필수 요소 숨김에 사용해 스크롤 방지
+*/
+@custom-variant short (@media (max-height: 896px));
+@custom-variant shorter (@media (max-height: 672px));
+
+/**
+    * 페이지 콘텐츠 컨테이너
+    * 최대 1280px 폭에서 중앙 정렬, 좁은 화면에서는 최소 여백 유지
+*/
+@utility page-gutter {
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}

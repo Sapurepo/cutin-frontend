@@ -1,0 +1,42 @@
+{
+  "name": "@cutin/admin",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack --port 3001",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --root ../.. apps/admin/src --passWithNoTests"
+  },
+  "dependencies": {
+    "@cutin/api": "workspace:*",
+    "@cutin/types": "workspace:*",
+    "@cutin/ui": "workspace:*",
+    "@tanstack/react-query": "^5",
+    "@tanstack/react-query-devtools": "^5",
+    "lucide-react": "^1.14.0",
+    "next": "^16.2.6",
+    "react": "^19",
+    "react-dom": "^19",
+    "zustand": "^5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/typography": "^0.5.19",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "^16",
+    "msw": "^2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
+}
