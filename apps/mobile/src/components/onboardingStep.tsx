@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { spacing } from "@cutin/tokens";
@@ -15,9 +15,8 @@ interface OnboardingStepProps {
   description: string;
   children: ReactNode;
   primaryLabel?: string;
+  primaryDisabled?: boolean;
   onPrimary: () => void;
-  /** 건너뛰기 목적지 — 미지정 시 onPrimary와 동일 (§3: 각 단계 건너뛰기 허용) */
-  onSkip?: () => void;
   secondary?: ReactNode;
 }
 
@@ -29,8 +28,8 @@ export function OnboardingStep({
   description,
   children,
   primaryLabel = "다음",
+  primaryDisabled = false,
   onPrimary,
-  onSkip,
   secondary,
 }: OnboardingStepProps) {
   const c = useTheme();
@@ -38,18 +37,11 @@ export function OnboardingStep({
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: c.bg }]}>
       <View style={styles.header}>
-        <IconButton icon="chevron-left" onPress={() => router.back()} />
-        <Pressable onPress={onSkip ?? onPrimary} hitSlop={8}>
-          <Text
-            style={{
-              fontFamily: font("body"),
-              fontSize: 13,
-              color: c.textSecondary,
-            }}
-          >
-            건너뛰기
-          </Text>
-        </Pressable>
+        <IconButton
+          icon="chevron-left"
+          disabled={step === 0}
+          onPress={() => router.back()}
+        />
       </View>
       <View style={styles.body}>
         <StepDots total={totalSteps} current={step} />
@@ -72,7 +64,13 @@ export function OnboardingStep({
         <View style={styles.content}>{children}</View>
       </View>
       <View style={styles.footer}>
-        <Button variant="fill" size="lg" block onPress={onPrimary}>
+        <Button
+          variant="fill"
+          size="lg"
+          disabled={primaryDisabled}
+          block
+          onPress={onPrimary}
+        >
           {primaryLabel}
         </Button>
         {secondary}
@@ -85,12 +83,10 @@ const styles = StyleSheet.create({
   screen: { flex: 1 },
   header: {
     height: 52,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    alignItems: "flex-start",
     paddingHorizontal: spacing[3],
   },
-  body: { flex: 1, paddingHorizontal: spacing[6], paddingTop: spacing[2] },
+  body: { flex: 1, paddingHorizontal: spacing[6], paddingTop: spacing[4] },
   title: { fontSize: 22, lineHeight: 30, marginTop: spacing[8] },
   description: { fontSize: 14, lineHeight: 22, marginTop: spacing[2] },
   content: { marginTop: spacing[6] },

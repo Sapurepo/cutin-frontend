@@ -74,6 +74,7 @@ interface IconButtonProps {
   icon: IconName;
   size?: "sm" | "md" | "lg";
   variant?: "ghost" | "outline";
+  disabled?: boolean;
   color?: string;
   onPress?: () => void;
 }
@@ -85,6 +86,7 @@ export function IconButton({
   icon,
   size = "md",
   variant = "ghost",
+  disabled = false,
   color,
   onPress,
 }: IconButtonProps) {
@@ -93,6 +95,7 @@ export function IconButton({
   return (
     <Pressable
       accessibilityRole="button"
+      disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => [
         styles.iconButton,
@@ -101,6 +104,7 @@ export function IconButton({
           borderWidth: 1,
           borderColor: c.borderStrong,
         },
+        disabled && { opacity: 0.4 },
         pressed && { backgroundColor: c.overlay },
       ]}
     >

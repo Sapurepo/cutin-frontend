@@ -7,13 +7,14 @@ import { OnboardingStep } from "@/components/onboardingStep";
 export default function NicknameScreen() {
   const router = useRouter();
   const [nickname, setNickname] = useState("");
-  const valid = nickname.length >= 2;
+  const valid = nickname.length >= 1;
 
   return (
     <OnboardingStep
       step={0}
       title={"어떤 이름으로\n기록할까요?"}
       description="친구들에게 보여질 닉네임이에요. 나중에 프로필에서 바꿀 수 있어요."
+      primaryDisabled={nickname.length === 0 && !valid}
       onPrimary={() => router.push("/notifyTime")}
     >
       <Input
