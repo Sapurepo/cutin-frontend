@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Image } from "expo-image";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import type { PostVisibility } from "@cutin/types";
 import { spacing } from "@cutin/tokens";
@@ -10,18 +10,18 @@ import { useTheme } from "@/theme/useTheme";
 import { AppHeader } from "@/components/appHeader";
 import { Button, IconButton } from "@/components/button";
 import { Chip } from "@/components/chip";
-import { CutFrame, type CutLayout } from "@/components/cutFrame";
+import { CutFrame } from "@/components/cutFrame";
 import { Input } from "@/components/input";
+import { getTemplate } from "@/features/capture/templates";
 import { useCaptureStore } from "@/stores/captureStore";
 
 /** §6.3 썸네일 지정 + §6.4 업로드 옵션 — 공개 범위 기본은 친구 공개(§1-6). */
 export default function EditUploadScreen() {
   const c = useTheme();
   const router = useRouter();
-  const params = useLocalSearchParams<{ layout?: string }>();
-  const layout = (params.layout as CutLayout) || undefined;
   const count = useCaptureStore((s) => s.count);
   const cuts = useCaptureStore((s) => s.cuts);
+  const template = getTemplate(useCaptureStore((s) => s.templateId));
 
   const [thumbnail, setThumbnail] = useState(0);
   const [caption, setCaption] = useState("");
@@ -34,7 +34,13 @@ export default function EditUploadScreen() {
         left={<IconButton icon="chevron-left" onPress={() => router.back()} />}
       />
       <ScrollView contentContainerStyle={styles.body}>
-        <CutFrame count={count} cuts={cuts} layout={layout} />
+        <CutFrame
+          count={count}
+          cuts={cuts}
+          layout={template.layout}
+          frameId={template.frame?.id}
+          stampDate={new Date().toISOString()}
+        />
 
         <View>
           <Text

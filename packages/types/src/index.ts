@@ -4,6 +4,7 @@ export type {
   Friend,
   PostVisibility,
   CutCount,
+  CutLayout,
   CaptureMode,
   Reaction,
   Comment,
