@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
-import { Image } from "expo-image";
 import type { CutCount, CutLayout } from "@cutin/types";
 import { radius } from "@cutin/tokens";
 import { font } from "@/theme/fonts";
 import { useTheme } from "@/theme/useTheme";
+import { FilteredCut } from "@/components/filteredCut";
 import { getFrameSkin } from "@/features/capture/templates";
 
 export type { CutLayout };
@@ -19,6 +19,8 @@ interface CutFrameProps {
   frameId?: string;
   /** 푸터 날짜 스탬프용 작성 시각(ISO) — 스킨에 footer가 있을 때만 표시 */
   stampDate?: string;
+  /** 보정 필터 id — 전체 컷에 일괄 적용 */
+  filterId?: string;
 }
 
 const GUTTER = 4; // 시안: 4px 헤어라인 거터 (기본 룩)
@@ -31,6 +33,7 @@ export function CutFrame({
   rounded = true,
   frameId,
   stampDate,
+  filterId,
 }: CutFrameProps) {
   const c = useTheme();
   const skin = getFrameSkin(frameId);
@@ -49,11 +52,10 @@ export function CutFrame({
       ]}
     >
       {cuts[index] ? (
-        <Image
-          source={{ uri: cuts[index] }}
+        <FilteredCut
+          uri={cuts[index]}
+          filterId={filterId}
           style={StyleSheet.absoluteFill}
-          alt=""
-          contentFit="cover"
         />
       ) : null}
     </View>

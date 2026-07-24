@@ -44,7 +44,7 @@ export default function TemplateSelectScreen() {
           <Pressable
             onPress={() => {
               setTemplate(selectedId);
-              router.push("/capture/edit");
+              router.push("/capture/filter");
             }}
             hitSlop={8}
           >

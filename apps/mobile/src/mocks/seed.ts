@@ -43,6 +43,7 @@ export const posts: Post[] = [
     myReaction: "🔥",
     layout: "2x2",
     frameId: "noir",
+    filterId: "sepia",
     createdAt: "2026-07-22T18:30:00.000Z",
   },
   {

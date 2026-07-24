@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import type { PostVisibility } from "@cutin/types";
@@ -11,6 +10,7 @@ import { AppHeader } from "@/components/appHeader";
 import { Button, IconButton } from "@/components/button";
 import { Chip } from "@/components/chip";
 import { CutFrame } from "@/components/cutFrame";
+import { FilteredCut } from "@/components/filteredCut";
 import { Input } from "@/components/input";
 import { getTemplate } from "@/features/capture/templates";
 import { useCaptureStore } from "@/stores/captureStore";
@@ -22,6 +22,7 @@ export default function EditUploadScreen() {
   const count = useCaptureStore((s) => s.count);
   const cuts = useCaptureStore((s) => s.cuts);
   const template = getTemplate(useCaptureStore((s) => s.templateId));
+  const filterId = useCaptureStore((s) => s.filterId);
 
   const [thumbnail, setThumbnail] = useState(0);
   const [caption, setCaption] = useState("");
@@ -40,6 +41,7 @@ export default function EditUploadScreen() {
           layout={template.layout}
           frameId={template.frame?.id}
           stampDate={new Date().toISOString()}
+          filterId={filterId}
         />
 
         <View>
@@ -66,11 +68,10 @@ export default function EditUploadScreen() {
                   },
                 ]}
               >
-                <Image
-                  source={{ uri: cut }}
+                <FilteredCut
+                  uri={cut}
+                  filterId={filterId}
                   style={StyleSheet.absoluteFill}
-                  alt=""
-                  contentFit="cover"
                 />
               </Pressable>
             ))}

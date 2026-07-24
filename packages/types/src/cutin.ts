@@ -49,6 +49,8 @@ export interface Post {
   layout?: CutLayout;
   /** 프레임 스킨 id — 미지정 시 기본 룩 */
   frameId?: string;
+  /** 보정 필터 id — 미지정 시 원본 */
+  filterId?: string;
   /** 작성 시각(ISO) — 프레임 푸터 날짜 스탬프에 사용 */
   createdAt?: string;
 }

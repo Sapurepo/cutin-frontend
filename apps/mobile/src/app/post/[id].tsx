@@ -62,6 +62,7 @@ export default function PostDetailScreen() {
             layout={post.layout}
             frameId={post.frameId}
             stampDate={post.createdAt}
+            filterId={post.filterId}
           />
         </View>
 

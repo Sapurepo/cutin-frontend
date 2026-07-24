@@ -10,11 +10,14 @@ interface CaptureState {
   retakeIndex: number | null;
   /** 선택한 템플릿 id — templates.ts 레지스트리 참조 */
   templateId: string;
+  /** 선택한 보정 필터 id — filters.ts 레지스트리 참조 */
+  filterId: string;
   start: (count: CutCount, mode: CaptureMode) => void;
   resume: (draft: Draft) => void;
   addCut: (uri: string) => void;
   setRetakeIndex: (index: number | null) => void;
   setTemplate: (templateId: string) => void;
+  setFilter: (filterId: string) => void;
   reset: () => void;
 }
 
@@ -24,6 +27,7 @@ const initial = {
   cuts: [] as string[],
   retakeIndex: null as number | null,
   templateId: "basic",
+  filterId: "original",
 };
 
 /** 촬영 플로우(카메라 → 템플릿 → 편집 → 업로드) 상태.
@@ -49,5 +53,6 @@ export const useCaptureStore = create<CaptureState>((set) => ({
     }),
   setRetakeIndex: (index) => set({ retakeIndex: index }),
   setTemplate: (templateId) => set({ templateId }),
+  setFilter: (filterId) => set({ filterId }),
   reset: () => set({ ...initial }),
 }));

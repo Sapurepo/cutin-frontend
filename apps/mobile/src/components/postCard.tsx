@@ -54,6 +54,7 @@ export function PostCard({ post, onPress }: PostCardProps) {
         layout={post.layout}
         frameId={post.frameId}
         stampDate={post.createdAt}
+        filterId={post.filterId}
         rounded={false}
       />
       {post.caption ? (
