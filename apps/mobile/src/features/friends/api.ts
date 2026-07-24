@@ -1,7 +1,6 @@
+/* 친구 API — MSW가 인터셉트하는 mocked HTTP를 실제 apiClient로 호출한다. */
 import type { Friend } from "@cutin/types";
-import { friends, requests, suggested } from "@/mocks/seed";
-
-const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
+import { apiClient } from "@/lib/apiClient";
 
 export interface FriendsOverview {
   friends: Friend[];
@@ -9,7 +8,6 @@ export interface FriendsOverview {
   requests: Friend[];
 }
 
-export async function fetchFriendsOverview(): Promise<FriendsOverview> {
-  await delay(300);
-  return { friends, suggested, requests };
+export function fetchFriendsOverview(): Promise<FriendsOverview> {
+  return apiClient.get<FriendsOverview>("/friends/overview");
 }

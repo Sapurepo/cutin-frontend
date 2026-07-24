@@ -1,5 +1,10 @@
 import { create } from "zustand";
-import type { CaptureMode, CutCount, Draft } from "@cutin/types";
+import type {
+  CaptureMode,
+  CutCount,
+  Draft,
+  PostVisibility,
+} from "@cutin/types";
 
 interface CaptureState {
   count: CutCount;
@@ -12,12 +17,21 @@ interface CaptureState {
   templateId: string;
   /** 선택한 보정 필터 id — filters.ts 레지스트리 참조 */
   filterId: string;
+  /** 업로드 옵션 — §6.3 대표 컷 / §6.4 캡션·공개 범위 */
+  caption: string;
+  visibility: PostVisibility;
+  thumbnailIndex: number;
   start: (count: CutCount, mode: CaptureMode) => void;
   resume: (draft: Draft) => void;
   addCut: (uri: string) => void;
   setRetakeIndex: (index: number | null) => void;
   setTemplate: (templateId: string) => void;
   setFilter: (filterId: string) => void;
+  setUploadMeta: (meta: {
+    caption: string;
+    visibility: PostVisibility;
+    thumbnailIndex: number;
+  }) => void;
   reset: () => void;
 }
 
@@ -28,6 +42,9 @@ const initial = {
   retakeIndex: null as number | null,
   templateId: "basic",
   filterId: "original",
+  caption: "",
+  visibility: "friends" as PostVisibility,
+  thumbnailIndex: 0,
 };
 
 /** 촬영 플로우(카메라 → 템플릿 → 편집 → 업로드) 상태.
@@ -54,5 +71,6 @@ export const useCaptureStore = create<CaptureState>((set) => ({
   setRetakeIndex: (index) => set({ retakeIndex: index }),
   setTemplate: (templateId) => set({ templateId }),
   setFilter: (filterId) => set({ filterId }),
+  setUploadMeta: (meta) => set(meta),
   reset: () => set({ ...initial }),
 }));

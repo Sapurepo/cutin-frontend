@@ -187,6 +187,9 @@ importers:
       '@types/react':
         specifier: ~19.2.2
         version: 19.2.17
+      msw:
+        specifier: ^2.15.0
+        version: 2.15.0(@types/node@22.20.1)(typescript@6.0.3)
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
@@ -7688,9 +7691,7 @@ snapshots:
       metro-runtime: 0.84.4
     transitivePeerDependencies:
       - '@babel/core'
-      - bufferutil
       - supports-color
-      - utf-8-validate
 
   '@react-native/normalize-colors@0.74.89': {}
 
@@ -10783,7 +10784,6 @@ snapshots:
       typescript: 6.0.3
     transitivePeerDependencies:
       - '@types/node'
-    optional: true
 
   multitars@1.0.0: {}
 

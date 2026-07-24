@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchFeed, fetchPost } from "./api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createPost, fetchFeed, fetchPost } from "./api";
 
 export const feedKeys = {
   all: ["feed"] as const,
@@ -14,5 +14,15 @@ export function usePost(id: string) {
   return useQuery({
     queryKey: feedKeys.detail(id),
     queryFn: () => fetchPost(id),
+  });
+}
+
+export function useCreatePost() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createPost,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: feedKeys.all });
+    },
   });
 }

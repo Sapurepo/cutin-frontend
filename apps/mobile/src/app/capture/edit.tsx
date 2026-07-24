@@ -23,6 +23,7 @@ export default function EditUploadScreen() {
   const cuts = useCaptureStore((s) => s.cuts);
   const template = getTemplate(useCaptureStore((s) => s.templateId));
   const filterId = useCaptureStore((s) => s.filterId);
+  const setUploadMeta = useCaptureStore((s) => s.setUploadMeta);
 
   const [thumbnail, setThumbnail] = useState(0);
   const [caption, setCaption] = useState("");
@@ -117,7 +118,10 @@ export default function EditUploadScreen() {
           size="lg"
           block
           icon="upload"
-          onPress={() => router.replace("/capture/uploading")}
+          onPress={() => {
+            setUploadMeta({ caption, visibility, thumbnailIndex: thumbnail });
+            router.replace("/capture/uploading");
+          }}
         >
           업로드
         </Button>

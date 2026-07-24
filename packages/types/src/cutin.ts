@@ -51,6 +51,8 @@ export interface Post {
   frameId?: string;
   /** 보정 필터 id — 미지정 시 원본 */
   filterId?: string;
+  /** 대표 컷(썸네일) 인덱스 — §6.3 */
+  thumbnailIndex?: number;
   /** 작성 시각(ISO) — 프레임 푸터 날짜 스탬프에 사용 */
   createdAt?: string;
 }
