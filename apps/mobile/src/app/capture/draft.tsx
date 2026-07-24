@@ -6,11 +6,13 @@ import { font } from "@/theme/fonts";
 import { useTheme } from "@/theme/useTheme";
 import { Button } from "@/components/button";
 import { draft } from "@/mocks/seed";
+import { useCaptureStore } from "@/stores/captureStore";
 
 /** §5.3 미완료 포스트 차단 — 동시 draft 1개 제한, [이어서 작성]/[폐기하고 새로 시작]. */
 export default function DraftBlockSheet() {
   const c = useTheme();
   const router = useRouter();
+  const resume = useCaptureStore((s) => s.resume);
 
   return (
     <View style={styles.screen}>
@@ -72,11 +74,10 @@ export default function DraftBlockSheet() {
             variant="fill"
             size="lg"
             block
-            onPress={() =>
-              router.replace(
-                `/capture/camera?count=${draft.count}&done=${draft.cuts.length}`,
-              )
-            }
+            onPress={() => {
+              resume(draft);
+              router.replace("/capture/camera");
+            }}
           >
             이어서 작성
           </Button>

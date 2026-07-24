@@ -1,33 +1,87 @@
-import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
 import { Image } from "expo-image";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { CameraView, useCameraPermissions, type CameraType } from "expo-camera";
+import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import type { CutCount } from "@cutin/types";
 import { colors, radius, spacing } from "@cutin/tokens";
 import { font } from "@/theme/fonts";
-import { IconButton } from "@/components/button";
+import { Button, IconButton } from "@/components/button";
 import { ProgressDots } from "@/components/progressDots";
-import { img } from "@/mocks/seed";
+import { useCaptureStore } from "@/stores/captureStore";
 
-/* 촬영 화면은 항상 다크(잉크) 캔버스 — 실제 카메라(expo-camera)는 후속 작업이고
- * 스켈레톤은 뷰파인더 플레이스홀더로 플로우만 검증한다. */
+/* 촬영 화면은 항상 다크(잉크) 캔버스. */
 const ink = colors.dark;
 
 export default function CameraScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ count?: string; done?: string }>();
-  const count = (Number(params.count) || 4) as CutCount;
-  const [done, setDone] = useState(Math.min(Number(params.done) || 0, count));
+  const count = useCaptureStore((s) => s.count);
+  const mode = useCaptureStore((s) => s.mode);
+  const cuts = useCaptureStore((s) => s.cuts);
+  const retakeIndex = useCaptureStore((s) => s.retakeIndex);
+  const addCut = useCaptureStore((s) => s.addCut);
+  const setRetakeIndex = useCaptureStore((s) => s.setRetakeIndex);
 
-  const shoot = () => {
-    const next = done + 1;
-    if (next >= count) {
-      router.replace(`/capture/template?count=${count}`);
-    } else {
-      setDone(next);
+  const [permission, requestPermission] = useCameraPermissions();
+  const [facing, setFacing] = useState<CameraType>("front");
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const cameraRef = useRef<CameraView>(null);
+  const busyRef = useRef(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const done = cuts.length;
+  const full = done >= count && retakeIndex === null;
+
+  useEffect(() => {
+    if (full) router.replace("/capture/template");
+  }, [full, router]);
+
+  // 화면 이탈 시 burst 카운트다운 정리
+  useEffect(
+    () => () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    },
+    [],
+  );
+
+  const shoot = async () => {
+    if (busyRef.current) return;
+    busyRef.current = true;
+    try {
+      const photo = await cameraRef.current?.takePictureAsync({ quality: 0.8 });
+      if (photo?.uri) addCut(photo.uri);
+    } finally {
+      busyRef.current = false;
     }
   };
+
+  /** burst: 3-2-1 카운트다운 → 촬영, 남은 컷이 있으면 반복. */
+  const runCountdown = () => {
+    let n = 3;
+    setCountdown(n);
+    timerRef.current = setInterval(() => {
+      n -= 1;
+      if (n > 0) {
+        setCountdown(n);
+        return;
+      }
+      if (timerRef.current) clearInterval(timerRef.current);
+      timerRef.current = null;
+      setCountdown(null);
+      void (async () => {
+        await shoot();
+        if (useCaptureStore.getState().cuts.length < count) runCountdown();
+      })();
+    }, 1000);
+  };
+
+  const onShutter = () => {
+    if (countdown !== null) return;
+    if (mode === "burst" && retakeIndex === null) runCountdown();
+    else void shoot();
+  };
+
+  const granted = permission?.granted ?? false;
 
   return (
     <SafeAreaView style={styles.screen}>
@@ -36,61 +90,121 @@ export default function CameraScreen() {
         <View style={styles.progressCapsule}>
           <ProgressDots total={count} current={done} />
         </View>
-        <View style={styles.topSpacer} />
+        <IconButton
+          icon="switch-camera"
+          color="#FFFFFF"
+          onPress={() => setFacing((f) => (f === "front" ? "back" : "front"))}
+        />
       </View>
 
       <View style={styles.viewfinder}>
-        <Image
-          source={{ uri: img("view2") }}
-          style={[StyleSheet.absoluteFill, { opacity: 0.85 }]}
-          alt=""
-          contentFit="cover"
-        />
-        <View style={styles.counterCapsule}>
-          <Text
-            style={{
-              fontFamily: font("latin"),
-              fontSize: 15,
-              color: "rgba(255,255,255,0.9)",
-            }}
-          >
-            {done + 1} / {count}
-          </Text>
-        </View>
+        {granted ? (
+          <>
+            <CameraView
+              ref={cameraRef}
+              facing={facing}
+              mirror={facing === "front"}
+              style={StyleSheet.absoluteFill}
+            />
+            {countdown !== null ? (
+              <View style={styles.countdownOverlay} pointerEvents="none">
+                <Text
+                  style={{
+                    fontFamily: font("latin", "600"),
+                    fontSize: 96,
+                    color: "#FFFFFF",
+                  }}
+                >
+                  {countdown}
+                </Text>
+              </View>
+            ) : null}
+            <View style={styles.counterCapsule}>
+              <Text
+                style={{
+                  fontFamily:
+                    retakeIndex !== null ? font("body", "500") : font("latin"),
+                  fontSize: 15,
+                  color: "rgba(255,255,255,0.9)",
+                }}
+              >
+                {retakeIndex !== null
+                  ? `${retakeIndex + 1}번째 컷 다시 찍기`
+                  : `${Math.min(done + 1, count)} / ${count}`}
+              </Text>
+            </View>
+          </>
+        ) : (
+          <View style={styles.permissionBox}>
+            <Text
+              style={{
+                fontFamily: font("body", "600"),
+                fontSize: 15,
+                color: "#FFFFFF",
+                textAlign: "center",
+              }}
+            >
+              컷 촬영을 위해{"\n"}카메라 권한이 필요해요
+            </Text>
+            {permission?.canAskAgain === false ? (
+              <Button
+                variant="outline"
+                onPress={() => void Linking.openSettings()}
+              >
+                설정에서 허용
+              </Button>
+            ) : (
+              <Button variant="fill" onPress={() => void requestPermission()}>
+                카메라 권한 허용
+              </Button>
+            )}
+          </View>
+        )}
       </View>
 
       <View style={styles.thumbs}>
-        {Array.from({ length: count }).map((_, i) => (
-          <View
-            key={i}
-            style={[
-              styles.thumb,
-              {
-                borderColor: i === done ? "#FFFFFF" : "#2C2C30",
-                borderWidth: i === done ? 1.5 : 1,
-              },
-            ]}
-          >
-            {i < done ? (
-              <Image
-                source={{ uri: img(`shot${i}`) }}
-                style={StyleSheet.absoluteFill}
-                alt=""
-                contentFit="cover"
-              />
-            ) : null}
-          </View>
-        ))}
+        {Array.from({ length: count }).map((_, i) => {
+          const filled = i < done;
+          const isRetake = retakeIndex === i;
+          const isNext = !filled && i === done && retakeIndex === null;
+          return (
+            <Pressable
+              key={i}
+              disabled={!filled}
+              accessibilityRole="button"
+              accessibilityLabel={`${i + 1}번째 컷 재촬영`}
+              onPress={() => setRetakeIndex(isRetake ? null : i)}
+              style={[
+                styles.thumb,
+                {
+                  borderColor: isRetake || isNext ? "#FFFFFF" : "#2C2C30",
+                  borderWidth: isRetake ? 2 : isNext ? 1.5 : 1,
+                },
+              ]}
+            >
+              {filled ? (
+                <Image
+                  source={{ uri: cuts[i] }}
+                  style={StyleSheet.absoluteFill}
+                  alt=""
+                  contentFit="cover"
+                />
+              ) : null}
+            </Pressable>
+          );
+        })}
       </View>
 
       <View style={styles.shutterRow}>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="촬영"
-          onPress={shoot}
+          disabled={!granted || countdown !== null}
+          onPress={onShutter}
           style={({ pressed }) => [
             styles.shutter,
             pressed && { transform: [{ scale: 0.94 }] },
+            (!granted || countdown !== null) && { opacity: 0.4 },
           ]}
         />
       </View>
@@ -113,7 +227,6 @@ const styles = StyleSheet.create({
     paddingVertical: spacing[1],
     borderRadius: radius.pill,
   },
-  topSpacer: { width: 40 },
   viewfinder: {
     flex: 1,
     marginHorizontal: spacing[3],
@@ -123,11 +236,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  countdownOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(10,10,11,0.25)",
+  },
   counterCapsule: {
+    position: "absolute",
+    bottom: spacing[3],
     backgroundColor: "rgba(10,10,11,0.4)",
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[1],
     borderRadius: radius.pill,
+  },
+  permissionBox: {
+    alignItems: "center",
+    gap: spacing[4],
+    padding: spacing[6],
   },
   thumbs: {
     flexDirection: "row",

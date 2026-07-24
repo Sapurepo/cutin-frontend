@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import type { CutCount } from "@cutin/types";
 import { radius, spacing } from "@cutin/tokens";
@@ -9,7 +9,7 @@ import { useTheme } from "@/theme/useTheme";
 import { AppHeader } from "@/components/appHeader";
 import { IconButton } from "@/components/button";
 import { CutFrame, type CutLayout } from "@/components/cutFrame";
-import { img } from "@/mocks/seed";
+import { useCaptureStore } from "@/stores/captureStore";
 
 const countNames: Record<CutCount, string> = {
   1: "한 컷",
@@ -24,9 +24,8 @@ const layouts: CutLayout[] = ["2x2", "row", "big-left", "strip"];
 export default function TemplateSelectScreen() {
   const c = useTheme();
   const router = useRouter();
-  const params = useLocalSearchParams<{ count?: string }>();
-  const count = (Number(params.count) || 4) as CutCount;
-  const cuts = Array.from({ length: count }, (_, i) => img(`a${i + 1}`));
+  const count = useCaptureStore((s) => s.count);
+  const cuts = useCaptureStore((s) => s.cuts);
   const [selected, setSelected] = useState<CutLayout>("2x2");
 
   return (
@@ -36,9 +35,7 @@ export default function TemplateSelectScreen() {
         left={<IconButton icon="chevron-left" onPress={() => router.back()} />}
         right={
           <Pressable
-            onPress={() =>
-              router.push(`/capture/edit?count=${count}&layout=${selected}`)
-            }
+            onPress={() => router.push(`/capture/edit?layout=${selected}`)}
             hitSlop={8}
           >
             <Text

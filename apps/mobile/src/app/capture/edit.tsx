@@ -3,7 +3,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import type { CutCount, PostVisibility } from "@cutin/types";
+import type { PostVisibility } from "@cutin/types";
 import { spacing } from "@cutin/tokens";
 import { font } from "@/theme/fonts";
 import { useTheme } from "@/theme/useTheme";
@@ -12,16 +12,16 @@ import { Button, IconButton } from "@/components/button";
 import { Chip } from "@/components/chip";
 import { CutFrame, type CutLayout } from "@/components/cutFrame";
 import { Input } from "@/components/input";
-import { img } from "@/mocks/seed";
+import { useCaptureStore } from "@/stores/captureStore";
 
 /** §6.3 썸네일 지정 + §6.4 업로드 옵션 — 공개 범위 기본은 친구 공개(§1-6). */
 export default function EditUploadScreen() {
   const c = useTheme();
   const router = useRouter();
-  const params = useLocalSearchParams<{ count?: string; layout?: string }>();
-  const count = (Number(params.count) || 4) as CutCount;
+  const params = useLocalSearchParams<{ layout?: string }>();
   const layout = (params.layout as CutLayout) || undefined;
-  const cuts = Array.from({ length: count }, (_, i) => img(`a${i + 1}`));
+  const count = useCaptureStore((s) => s.count);
+  const cuts = useCaptureStore((s) => s.cuts);
 
   const [thumbnail, setThumbnail] = useState(0);
   const [caption, setCaption] = useState("");
