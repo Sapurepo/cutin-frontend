@@ -7,6 +7,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { colors } from "@cutin/tokens";
 import { queryClient } from "@/lib/queryClient";
+import { ensureMocking } from "@/mocks/ensureMocking";
 import { fontAssets } from "@/theme/fonts";
 
 SplashScreen.preventAutoHideAsync();
@@ -15,6 +16,11 @@ export default function RootLayout() {
   const [fontsLoaded] = useFonts(fontAssets);
   const scheme = useColorScheme();
   const c = scheme === "dark" ? colors.dark : colors.light;
+
+  // MSW 조기 워밍 — apiClient가 매 요청 전 await 하므로 블로킹은 아니다.
+  useEffect(() => {
+    void ensureMocking();
+  }, []);
 
   useEffect(() => {
     if (fontsLoaded) SplashScreen.hideAsync();

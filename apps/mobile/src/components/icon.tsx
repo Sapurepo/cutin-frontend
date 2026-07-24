@@ -28,6 +28,7 @@ import {
   Sun,
   Sunrise,
   Sunset,
+  SwitchCamera,
   Trash2,
   Upload,
   User,
@@ -62,6 +63,7 @@ export type IconName =
   | "sun"
   | "sunrise"
   | "sunset"
+  | "switch-camera"
   | "trash-2"
   | "upload"
   | "user"
@@ -95,6 +97,7 @@ const icons: Record<IconName, LucideIcon> = {
   sun: Sun,
   sunrise: Sunrise,
   sunset: Sunset,
+  "switch-camera": SwitchCamera,
   "trash-2": Trash2,
   upload: Upload,
   user: User,

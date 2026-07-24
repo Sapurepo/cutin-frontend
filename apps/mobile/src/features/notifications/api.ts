@@ -1,9 +1,7 @@
+/* 알림 API — MSW가 인터셉트하는 mocked HTTP를 실제 apiClient로 호출한다. */
 import type { NotificationItem } from "@cutin/types";
-import { notifications } from "@/mocks/seed";
+import { apiClient } from "@/lib/apiClient";
 
-const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-export async function fetchNotifications(): Promise<NotificationItem[]> {
-  await delay(200);
-  return notifications;
+export function fetchNotifications(): Promise<NotificationItem[]> {
+  return apiClient.get<NotificationItem[]>("/notifications");
 }

@@ -56,7 +56,14 @@ export default function PostDetailScreen() {
         </View>
 
         <View style={styles.frame}>
-          <CutFrame count={post.count} cuts={post.cuts} />
+          <CutFrame
+            count={post.count}
+            cuts={post.cuts}
+            layout={post.layout}
+            frameId={post.frameId}
+            stampDate={post.createdAt}
+            filterId={post.filterId}
+          />
         </View>
 
         {post.caption ? (

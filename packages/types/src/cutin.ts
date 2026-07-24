@@ -17,6 +17,9 @@ export type PostVisibility = "friends" | "public";
 /** 컷 수 옵션 — §5.1 */
 export type CutCount = 1 | 2 | 4 | 6;
 
+/** 4컷 템플릿 레이아웃 변형 — §6.1 (4컷 외 컷 수는 2xN 기본) */
+export type CutLayout = "2x2" | "row" | "big-left" | "strip";
+
 /** 촬영 방식 — §5.2 (A) 연속 촬영 / (B) 한 장씩 개별 촬영 */
 export type CaptureMode = "burst" | "single";
 
@@ -42,6 +45,16 @@ export interface Post {
   comments: Comment[];
   myReaction: string | null;
   visibility?: PostVisibility;
+  /** 템플릿 레이아웃 — 미지정 시 컷 수 기본(2xN) */
+  layout?: CutLayout;
+  /** 프레임 스킨 id — 미지정 시 기본 룩 */
+  frameId?: string;
+  /** 보정 필터 id — 미지정 시 원본 */
+  filterId?: string;
+  /** 대표 컷(썸네일) 인덱스 — §6.3 */
+  thumbnailIndex?: number;
+  /** 작성 시각(ISO) — 프레임 푸터 날짜 스탬프에 사용 */
+  createdAt?: string;
 }
 
 /** 미완료 포스트 — §5.3 (동시 draft 1개 제한) */

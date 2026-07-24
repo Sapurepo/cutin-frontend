@@ -48,7 +48,15 @@ export function PostCard({ post, onPress }: PostCardProps) {
         </View>
         <Icon name="more-horizontal" size={18} color={c.textSecondary} />
       </View>
-      <CutFrame count={post.count} cuts={post.cuts} rounded={false} />
+      <CutFrame
+        count={post.count}
+        cuts={post.cuts}
+        layout={post.layout}
+        frameId={post.frameId}
+        stampDate={post.createdAt}
+        filterId={post.filterId}
+        rounded={false}
+      />
       {post.caption ? (
         <Text
           style={[

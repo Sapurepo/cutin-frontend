@@ -41,6 +41,10 @@ export const posts: Post[] = [
       { name: "하늘", text: "세 번째 컷 최고", timeAgo: "40분 전" },
     ],
     myReaction: "🔥",
+    layout: "2x2",
+    frameId: "noir",
+    filterId: "sepia",
+    createdAt: "2026-07-22T18:30:00.000Z",
   },
   {
     id: "p2",
@@ -69,6 +73,8 @@ export const posts: Post[] = [
     ],
     comments: [],
     myReaction: null,
+    frameId: "peach",
+    createdAt: "2026-07-23T09:10:00.000Z",
   },
 ];
 

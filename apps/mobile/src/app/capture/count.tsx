@@ -9,6 +9,7 @@ import { useTheme } from "@/theme/useTheme";
 import { AppHeader } from "@/components/appHeader";
 import { Button, IconButton } from "@/components/button";
 import { Chip } from "@/components/chip";
+import { useCaptureStore } from "@/stores/captureStore";
 
 const countLabels: Record<CutCount, string> = {
   1: "한 컷",
@@ -21,6 +22,7 @@ const countLabels: Record<CutCount, string> = {
 export default function CaptureCountScreen() {
   const c = useTheme();
   const router = useRouter();
+  const start = useCaptureStore((s) => s.start);
   const [count, setCount] = useState<CutCount>(4);
   const [mode, setMode] = useState<CaptureMode>("single");
 
@@ -102,7 +104,10 @@ export default function CaptureCountScreen() {
             size="lg"
             block
             icon="camera"
-            onPress={() => router.push(`/capture/camera?count=${count}&done=0`)}
+            onPress={() => {
+              start(count, mode);
+              router.push("/capture/camera");
+            }}
           >
             {countLabels[count]} 촬영 시작
           </Button>

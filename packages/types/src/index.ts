@@ -1,9 +1,15 @@
-export type { ApiError, OffsetPaginatedResponse, ToggleResponse } from "./api";
+export type {
+  ApiError,
+  CreatePostRequest,
+  OffsetPaginatedResponse,
+  ToggleResponse,
+} from "./api";
 export type {
   UserSummary,
   Friend,
   PostVisibility,
   CutCount,
+  CutLayout,
   CaptureMode,
   Reaction,
   Comment,
