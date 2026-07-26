@@ -1,3 +1,5 @@
+// config plugin은 Expo CLI가 CommonJS로 로드하므로 require를 써야 한다.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { withXcodeProject } = require("expo/config-plugins");
 
 /**

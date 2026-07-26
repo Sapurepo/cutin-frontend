@@ -16,8 +16,8 @@ export function ensureMocking(): Promise<void> {
     startPromise = (async () => {
       // msw 모듈 평가 전에 Hermes 전역 스텁을 먼저 설치한다 (순서 중요).
       await import("./polyfills");
-      const { server } = await import("./native");
-      server.listen({ onUnhandledRequest: "bypass" });
+      const { installMockFetch } = await import("./mockFetch");
+      installMockFetch();
     })();
   }
   return startPromise;
