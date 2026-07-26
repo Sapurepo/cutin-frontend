@@ -4,11 +4,14 @@ import type { Post } from "@cutin/types";
 
 import { posts as seedPosts } from "./seed";
 
+// 핸들러가 포스트를 제자리에서 수정(반응·보관 토글)하므로 시드와 참조를 끊는다.
+const clonePosts = () => structuredClone(seedPosts) as Post[];
+
 export const db = {
-  posts: [...seedPosts] as Post[],
+  posts: clonePosts(),
 };
 
 /** 테스트 간 초기화용. */
 export function resetDb() {
-  db.posts = [...seedPosts];
+  db.posts = clonePosts();
 }

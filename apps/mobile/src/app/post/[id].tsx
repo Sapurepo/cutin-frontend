@@ -10,7 +10,11 @@ import { Button, IconButton } from "@/components/button";
 import { Chip } from "@/components/chip";
 import { CutFrame } from "@/components/cutFrame";
 import { Input } from "@/components/input";
-import { usePost } from "@/features/feed/queries";
+import {
+  usePost,
+  useToggleBookmark,
+  useToggleReaction,
+} from "@/features/feed/queries";
 import { reactionPalette } from "@/mocks/seed";
 
 /** §7 포스트 상세 — 공유(7.1) + 댓글(7.2) + 반응(7.3). */
@@ -19,6 +23,8 @@ export default function PostDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: post } = usePost(id ?? "");
+  const bookmark = useToggleBookmark();
+  const react = useToggleReaction();
 
   if (!post) return <View style={[styles.screen, { backgroundColor: c.bg }]} />;
 
@@ -27,7 +33,13 @@ export default function PostDetailScreen() {
       <AppHeader
         title="포스트"
         left={<IconButton icon="chevron-left" onPress={() => router.back()} />}
-        right={<IconButton icon="share" />}
+        right={
+          <IconButton
+            icon={post.bookmarked ? "bookmark-check" : "bookmark"}
+            accessibilityLabel={post.bookmarked ? "보관 해제" : "보관하기"}
+            onPress={() => bookmark.mutate(post.id)}
+          />
+        }
       />
       <ScrollView>
         <View style={styles.author}>
@@ -97,6 +109,7 @@ export default function PostDetailScreen() {
                 emoji={emoji}
                 count={reaction?.count}
                 selected={post.myReaction === emoji}
+                onPress={() => react.mutate({ id: post.id, emoji })}
               />
             );
           })}

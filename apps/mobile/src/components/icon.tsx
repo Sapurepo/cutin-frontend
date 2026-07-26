@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   Bell,
   Bookmark,
+  BookmarkCheck,
   Camera,
   Check,
   ChevronLeft,
@@ -41,6 +42,7 @@ export type IconName =
   | "arrow-left"
   | "bell"
   | "bookmark"
+  | "bookmark-check"
   | "camera"
   | "check"
   | "chevron-left"
@@ -75,6 +77,7 @@ const icons: Record<IconName, LucideIcon> = {
   "arrow-left": ArrowLeft,
   bell: Bell,
   bookmark: Bookmark,
+  "bookmark-check": BookmarkCheck,
   camera: Camera,
   check: Check,
   "chevron-left": ChevronLeft,

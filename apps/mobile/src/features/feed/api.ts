@@ -14,3 +14,17 @@ export function fetchPost(id: string): Promise<Post> {
 export function createPost(body: CreatePostRequest): Promise<Post> {
   return apiClient.post<Post>("/posts", body);
 }
+
+export function fetchArchive(): Promise<Post[]> {
+  return apiClient.get<Post[]>("/archive");
+}
+
+/** 보관 토글 — 갱신된 포스트를 돌려준다. */
+export function toggleBookmark(id: string): Promise<Post> {
+  return apiClient.post<Post>(`/posts/${id}/bookmark`);
+}
+
+/** 반응 토글(1인 1반응) — 같은 이모지면 해제, 다른 이모지면 교체된다. */
+export function toggleReaction(id: string, emoji: string): Promise<Post> {
+  return apiClient.post<Post>(`/posts/${id}/reactions`, { emoji });
+}
