@@ -8,6 +8,12 @@ import { Icon, type IconName } from "./icon";
 
 export type TabKey = "home" | "friends" | "profile" | "archive";
 
+/** 탭바가 콘텐츠 위에 떠 있으므로, 스크롤 하단에 이만큼 여백을 줘야 마지막 항목이 가리지 않는다. */
+export function useTabBarSpace() {
+  const insets = useSafeAreaInsets();
+  return layout.navHeight + insets.bottom;
+}
+
 interface NavBarProps {
   active: TabKey;
   onTab: (tab: TabKey) => void;
@@ -88,6 +94,11 @@ export function NavBar({ active, onTab, onCapture }: NavBarProps) {
 
 const styles = StyleSheet.create({
   bar: {
+    // 콘텐츠가 유리 아래로 지나가야 재질이 드러난다 — 레이아웃을 차지하지 않고 띄운다.
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",

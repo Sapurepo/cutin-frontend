@@ -9,6 +9,7 @@ import { Button, IconButton } from "@/components/button";
 import { EmptyState } from "@/components/emptyState";
 import { PostCard } from "@/components/postCard";
 import { Skeleton } from "@/components/skeleton";
+import { useTabBarSpace } from "@/components/navBar";
 import { useFeed } from "@/features/feed/queries";
 
 /** §4.1 피드 — 최신순 목록, 당겨서 새로고침, 빈 상태/로딩 스켈레톤. */
@@ -16,6 +17,7 @@ export default function FeedScreen() {
   const c = useTheme();
   const router = useRouter();
   const { data: posts, isLoading, isRefetching, refetch } = useFeed();
+  const tabBarSpace = useTabBarSpace();
 
   return (
     <SafeAreaView
@@ -55,7 +57,7 @@ export default function FeedScreen() {
           keyExtractor={(post) => post.id}
           refreshing={isRefetching}
           onRefresh={refetch}
-          contentContainerStyle={styles.list}
+          contentContainerStyle={[styles.list, { paddingBottom: tabBarSpace }]}
           ItemSeparatorComponent={() => <View style={{ height: spacing[4] }} />}
           renderItem={({ item }) => (
             <PostCard

@@ -1,4 +1,5 @@
 import {
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -6,7 +7,8 @@ import {
   View,
 } from "react-native";
 import { Image } from "expo-image";
-import type { UserSummary } from "@cutin/types";
+import { useRouter } from "expo-router";
+import type { Post, UserSummary } from "@cutin/types";
 import { spacing } from "@cutin/tokens";
 import { font } from "@/theme/fonts";
 import { useTheme } from "@/theme/useTheme";
@@ -14,6 +16,7 @@ import { Avatar } from "@/components/avatar";
 import { Button, IconButton } from "@/components/button";
 import { ProfileStat } from "@/components/profileStat";
 import { Skeleton } from "@/components/skeleton";
+import { useTabBarSpace } from "@/components/navBar";
 
 const GRID_SIZE = 9;
 const GRID_COLUMNS = 3;
@@ -30,8 +33,8 @@ interface ProfileViewProps {
   stats: ProfileStats;
   /** 본인 프로필이면 편집, 타인이면 친구 추가·신고를 노출한다 */
   isMe: boolean;
-  /** 그리드에 깔 컷 이미지 */
-  cuts: string[];
+  /** 이 유저의 포스트 — 컷을 펼쳐 그리드로 깔고, 누르면 상세로 간다 */
+  posts: Post[];
   isLoading?: boolean;
 }
 
@@ -40,18 +43,22 @@ export function ProfileView({
   user,
   stats,
   isMe,
-  cuts,
+  posts,
   isLoading,
 }: ProfileViewProps) {
   const c = useTheme();
+  const router = useRouter();
+  const tabBarSpace = useTabBarSpace();
   // 퍼센트 너비는 gap과 합쳐지면 한 줄에 3칸이 들어가지 않는다 — 실제 폭에서 계산한다.
   const { width } = useWindowDimensions();
   const size = (width - GRID_GAP * (GRID_COLUMNS - 1)) / GRID_COLUMNS;
   const cell = { width: size, height: size };
-  const grid = cuts.slice(0, GRID_SIZE);
+  const grid = posts
+    .flatMap((post) => post.cuts.map((uri) => ({ uri, postId: post.id })))
+    .slice(0, GRID_SIZE);
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{ paddingBottom: tabBarSpace }}>
       <View style={styles.hero}>
         <Avatar src={user.avatar} name={user.name} size={80} ring={isMe} />
         <Text
@@ -98,18 +105,21 @@ export function ProfileView({
           ? Array.from({ length: GRID_SIZE }).map((_, i) => (
               <Skeleton key={i} style={[cell, styles.cellSquare]} />
             ))
-          : grid.map((src, i) => (
-              <View
+          : grid.map((item, i) => (
+              <Pressable
                 key={i}
+                accessibilityRole="button"
+                accessibilityLabel="포스트 열기"
+                onPress={() => router.push(`/post/${item.postId}`)}
                 style={[cell, { backgroundColor: c.surfaceSunken }]}
               >
                 <Image
-                  source={{ uri: src }}
+                  source={{ uri: item.uri }}
                   style={StyleSheet.absoluteFill}
                   alt=""
                   contentFit="cover"
                 />
-              </View>
+              </Pressable>
             ))}
       </View>
     </ScrollView>

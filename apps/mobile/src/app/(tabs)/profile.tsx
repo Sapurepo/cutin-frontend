@@ -32,9 +32,7 @@ export default function ProfileScreen() {
         user={me}
         stats={{ posts: "24", friends: "132", reactions: "1.2k" }}
         isMe
-        cuts={(posts ?? [])
-          .filter((p) => p.author.handle === me.handle)
-          .flatMap((p) => p.cuts)}
+        posts={(posts ?? []).filter((p) => p.author.handle === me.handle)}
         isLoading={isLoading}
       />
     </SafeAreaView>

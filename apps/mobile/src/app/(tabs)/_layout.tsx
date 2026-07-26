@@ -13,7 +13,11 @@ export default function TabsLayout() {
   const router = useRouter();
   return (
     <Tabs
-      screenOptions={{ headerShown: false }}
+      // 탭바가 absolute로 떠 있으므로 화면이 그 아래까지 그려지게 둔다(유리 뒤로 콘텐츠가 지나간다).
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: { position: "absolute" },
+      }}
       tabBar={({ state, navigation }) => {
         const current = state.routes[state.index]?.name ?? "index";
         const active =

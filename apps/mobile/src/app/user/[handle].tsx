@@ -25,9 +25,7 @@ export default function UserProfileScreen() {
         handle: handle ?? "",
       });
 
-  const cuts = (posts ?? [])
-    .filter((p) => p.author.handle === handle)
-    .flatMap((p) => p.cuts);
+  const userPosts = (posts ?? []).filter((p) => p.author.handle === handle);
 
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: c.bg }]}>
@@ -53,7 +51,7 @@ export default function UserProfileScreen() {
             : { posts: "41", friends: "208", reactions: "3.4k" }
         }
         isMe={isMe}
-        cuts={cuts}
+        posts={userPosts}
         isLoading={isLoading}
       />
     </SafeAreaView>
