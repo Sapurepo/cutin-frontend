@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { spacing } from "@cutin/tokens";
@@ -31,27 +31,38 @@ export default function PostDetailScreen() {
       />
       <ScrollView>
         <View style={styles.author}>
-          <Avatar src={post.author.avatar} name={post.author.name} size={40} />
-          <View style={styles.authorText}>
-            <Text
-              style={{
-                fontFamily: font("body", "600"),
-                fontSize: 14,
-                color: c.textPrimary,
-              }}
-            >
-              {post.author.name}
-            </Text>
-            <Text
-              style={{
-                fontFamily: font("body"),
-                fontSize: 11,
-                color: c.textSecondary,
-              }}
-            >
-              {post.timeAgo}
-            </Text>
-          </View>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`${post.author.name} 프로필 보기`}
+            onPress={() => router.push(`/user/${post.author.handle}`)}
+            style={styles.authorLink}
+          >
+            <Avatar
+              src={post.author.avatar}
+              name={post.author.name}
+              size={40}
+            />
+            <View style={styles.authorText}>
+              <Text
+                style={{
+                  fontFamily: font("body", "600"),
+                  fontSize: 14,
+                  color: c.textPrimary,
+                }}
+              >
+                {post.author.name}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: font("body"),
+                  fontSize: 11,
+                  color: c.textSecondary,
+                }}
+              >
+                {post.timeAgo}
+              </Text>
+            </View>
+          </Pressable>
           <IconButton icon="more-horizontal" />
         </View>
 
@@ -165,6 +176,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: spacing[2],
     padding: spacing[3],
+  },
+  authorLink: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing[2],
   },
   authorText: { flex: 1, gap: 1 },
   frame: { paddingHorizontal: spacing[3] },
