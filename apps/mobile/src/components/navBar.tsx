@@ -1,8 +1,9 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { layout, radius, spacing } from "@cutin/tokens";
 import { font } from "@/theme/fonts";
 import { useTheme } from "@/theme/useTheme";
+import { GlassSurface } from "./glassSurface";
 import { Icon, type IconName } from "./icon";
 
 export type TabKey = "home" | "friends" | "profile" | "archive";
@@ -21,18 +22,18 @@ const tabs: { key: TabKey | "capture"; icon: IconName; label: string }[] = [
   { key: "profile", icon: "user", label: "프로필" },
 ];
 
-/** 하단 5탭 바 — 중앙 촬영 CTA는 fill 원형으로 강조(레이즈드 엘리베이션 허용 지점). */
+/** 하단 5탭 바 — 콘텐츠가 지나가는 유리 표면. 중앙 촬영 CTA는 fill 원형으로 강조. */
 export function NavBar({ active, onTab, onCapture }: NavBarProps) {
   const c = useTheme();
   const insets = useSafeAreaInsets();
   return (
-    <View
+    <GlassSurface
+      fallbackColor={c.bg}
       style={[
         styles.bar,
         {
           height: layout.navHeight + insets.bottom,
           paddingBottom: insets.bottom,
-          backgroundColor: c.bg,
           borderTopColor: c.border,
         },
       ]}
@@ -81,7 +82,7 @@ export function NavBar({ active, onTab, onCapture }: NavBarProps) {
           </Pressable>
         );
       })}
-    </View>
+    </GlassSurface>
   );
 }
 
