@@ -8,6 +8,8 @@ import { Badge } from "@/components/badge";
 import { Button, IconButton } from "@/components/button";
 import { EmptyState } from "@/components/emptyState";
 import { PostCard } from "@/components/postCard";
+import { Skeleton } from "@/components/skeleton";
+import { useTabBarSpace } from "@/components/navBar";
 import { useFeed } from "@/features/feed/queries";
 
 /** §4.1 피드 — 최신순 목록, 당겨서 새로고침, 빈 상태/로딩 스켈레톤. */
@@ -15,6 +17,7 @@ export default function FeedScreen() {
   const c = useTheme();
   const router = useRouter();
   const { data: posts, isLoading, isRefetching, refetch } = useFeed();
+  const tabBarSpace = useTabBarSpace();
 
   return (
     <SafeAreaView
@@ -38,10 +41,14 @@ export default function FeedScreen() {
       {isLoading ? (
         <View style={styles.list}>
           {[0, 1].map((i) => (
-            <View
-              key={i}
-              style={[styles.skeleton, { backgroundColor: c.surfaceSunken }]}
-            />
+            <View key={i} style={styles.skeletonPost}>
+              <View style={styles.skeletonHeader}>
+                <Skeleton style={styles.skeletonAvatar} />
+                <Skeleton style={styles.skeletonName} />
+              </View>
+              <Skeleton style={styles.skeletonFrame} />
+              <Skeleton style={styles.skeletonCaption} />
+            </View>
           ))}
         </View>
       ) : posts && posts.length > 0 ? (
@@ -50,7 +57,7 @@ export default function FeedScreen() {
           keyExtractor={(post) => post.id}
           refreshing={isRefetching}
           onRefresh={refetch}
-          contentContainerStyle={styles.list}
+          contentContainerStyle={[styles.list, { paddingBottom: tabBarSpace }]}
           ItemSeparatorComponent={() => <View style={{ height: spacing[4] }} />}
           renderItem={({ item }) => (
             <PostCard
@@ -85,6 +92,16 @@ const styles = StyleSheet.create({
   screen: { flex: 1 },
   bellBadge: { position: "absolute", top: 4, right: 4 },
   list: { padding: spacing[4], gap: spacing[4] },
-  skeleton: { height: 420, borderRadius: radius.md },
+  // PostCard 구조(헤더 → 정사각 프레임 → 캡션)를 그대로 따라가 레이아웃 점프를 없앤다.
+  skeletonPost: { gap: spacing[2] },
+  skeletonHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing[2],
+  },
+  skeletonAvatar: { width: 28, height: 28, borderRadius: radius.pill },
+  skeletonName: { width: 96, height: 13, borderRadius: radius.xs },
+  skeletonFrame: { aspectRatio: 1, borderRadius: radius.lg },
+  skeletonCaption: { width: "62%", height: 14, borderRadius: radius.xs },
   empty: { flex: 1, alignItems: "center", justifyContent: "center" },
 });

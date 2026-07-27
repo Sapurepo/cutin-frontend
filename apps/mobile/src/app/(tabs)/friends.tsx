@@ -10,6 +10,7 @@ import { Avatar } from "@/components/avatar";
 import { Button } from "@/components/button";
 import { Chip } from "@/components/chip";
 import { Input } from "@/components/input";
+import { useTabBarSpace } from "@/components/navBar";
 import { useFriendsOverview } from "@/features/friends/queries";
 
 const Row = ({ friend, right }: { friend: Friend; right: React.ReactNode }) => {
@@ -82,6 +83,7 @@ export default function FriendsScreen() {
   const c = useTheme();
   const router = useRouter();
   const { data } = useFriendsOverview();
+  const tabBarSpace = useTabBarSpace();
 
   return (
     <SafeAreaView
@@ -89,7 +91,9 @@ export default function FriendsScreen() {
       style={[styles.screen, { backgroundColor: c.bg }]}
     >
       <AppHeader title="친구" />
-      <ScrollView contentContainerStyle={styles.body}>
+      <ScrollView
+        contentContainerStyle={[styles.body, { paddingBottom: tabBarSpace }]}
+      >
         <Input icon="search" placeholder="닉네임 또는 아이디 검색" />
 
         <SectionTitle>받은 친구 요청</SectionTitle>

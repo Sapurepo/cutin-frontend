@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { radius, spacing } from "@cutin/tokens";
+import { getErrorMessage, isClientError } from "@cutin/api";
 import { font } from "@/theme/fonts";
 import { useTheme } from "@/theme/useTheme";
 import { AppHeader } from "@/components/appHeader";
@@ -12,13 +13,23 @@ import { useCreatePost } from "@/features/feed/queries";
 import { getTemplate } from "@/features/capture/templates";
 import { useCaptureStore } from "@/stores/captureStore";
 
+/** 사용자 문구 + 개발 빌드에서는 원인 코드까지 (모킹/네트워크 문제 진단용). */
+function uploadErrorText(error: unknown): string {
+  const message = getErrorMessage(error);
+  if (!__DEV__) return message;
+  const detail = isClientError(error)
+    ? `${error.code}${error.status ? ` ${error.status}` : ""}: ${error.message}`
+    : String(error);
+  return `${message}\n(${detail})`;
+}
+
 /** §6.4 업로드 진행 — mocked POST /posts로 실제 생성 후 피드 복귀. */
 export default function UploadingScreen() {
   const c = useTheme();
   const router = useRouter();
   const cuts = useCaptureStore((s) => s.cuts);
   const filterId = useCaptureStore((s) => s.filterId);
-  const { mutate, isError } = useCreatePost();
+  const { mutate, isError, error } = useCreatePost();
   const [pct, setPct] = useState(0);
   const startedRef = useRef(false);
 
@@ -102,9 +113,7 @@ export default function UploadingScreen() {
             color: isError ? c.danger : c.textSecondary,
           }}
         >
-          {isError
-            ? "네트워크 상태를 확인하고 다시 시도해주세요"
-            : "잠시만 기다려주세요"}
+          {isError ? uploadErrorText(error) : "잠시만 기다려주세요"}
         </Text>
       </View>
       <View style={styles.footer}>

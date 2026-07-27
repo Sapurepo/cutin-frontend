@@ -1,11 +1,18 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { layout, radius, spacing } from "@cutin/tokens";
 import { font } from "@/theme/fonts";
 import { useTheme } from "@/theme/useTheme";
+import { GlassSurface } from "./glassSurface";
 import { Icon, type IconName } from "./icon";
 
 export type TabKey = "home" | "friends" | "profile" | "archive";
+
+/** 탭바가 콘텐츠 위에 떠 있으므로, 스크롤 하단에 이만큼 여백을 줘야 마지막 항목이 가리지 않는다. */
+export function useTabBarSpace() {
+  const insets = useSafeAreaInsets();
+  return layout.navHeight + insets.bottom;
+}
 
 interface NavBarProps {
   active: TabKey;
@@ -21,18 +28,18 @@ const tabs: { key: TabKey | "capture"; icon: IconName; label: string }[] = [
   { key: "profile", icon: "user", label: "프로필" },
 ];
 
-/** 하단 5탭 바 — 중앙 촬영 CTA는 fill 원형으로 강조(레이즈드 엘리베이션 허용 지점). */
+/** 하단 5탭 바 — 콘텐츠가 지나가는 유리 표면. 중앙 촬영 CTA는 fill 원형으로 강조. */
 export function NavBar({ active, onTab, onCapture }: NavBarProps) {
   const c = useTheme();
   const insets = useSafeAreaInsets();
   return (
-    <View
+    <GlassSurface
+      fallbackColor={c.bg}
       style={[
         styles.bar,
         {
           height: layout.navHeight + insets.bottom,
           paddingBottom: insets.bottom,
-          backgroundColor: c.bg,
           borderTopColor: c.border,
         },
       ]}
@@ -81,12 +88,17 @@ export function NavBar({ active, onTab, onCapture }: NavBarProps) {
           </Pressable>
         );
       })}
-    </View>
+    </GlassSurface>
   );
 }
 
 const styles = StyleSheet.create({
   bar: {
+    // 콘텐츠가 유리 아래로 지나가야 재질이 드러난다 — 레이아웃을 차지하지 않고 띄운다.
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",

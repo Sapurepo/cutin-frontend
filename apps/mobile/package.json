@@ -15,6 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@callstack/liquid-glass": "^0.8.0",
     "@cutin/api": "workspace:*",
     "@cutin/tokens": "workspace:*",
     "@cutin/types": "workspace:*",

@@ -1,7 +1,7 @@
-/* msw/native가 기대하지만 Hermes 전역에 없는 최소 스텁.
- * - msw core가 모듈 스코프에서 `new BroadcastChannel()`을 실행한다
- *   (WebSocket 모킹용 — RN에선 쓰지 않으므로 no-op으로 충분)
- * - Event/EventTarget/MessageEvent는 @mswjs/interceptors 이벤트 디스패치용
+/* msw core가 기대하지만 Hermes 전역에 없는 최소 스텁.
+ * msw core는 모듈 스코프에서 `new BroadcastChannel()`을 실행한다
+ * (WebSocket 모킹용 — RN에선 쓰지 않으므로 no-op으로 충분하고,
+ *  그 구현에 Event/EventTarget/MessageEvent가 딸려온다).
  * URL·TextEncoder류는 Expo SDK 57 winter 런타임이 전역 설치하므로 불필요.
  * 반드시 msw 모듈 평가 전에 import 되어야 한다 (ensureMocking이 순서를 보장). */
 

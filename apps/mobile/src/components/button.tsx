@@ -76,6 +76,8 @@ interface IconButtonProps {
   variant?: "ghost" | "outline";
   disabled?: boolean;
   color?: string;
+  /** 아이콘만으로 뜻이 갈리는 토글 버튼에는 반드시 붙인다 */
+  accessibilityLabel?: string;
   onPress?: () => void;
 }
 
@@ -88,6 +90,7 @@ export function IconButton({
   variant = "ghost",
   disabled = false,
   color,
+  accessibilityLabel,
   onPress,
 }: IconButtonProps) {
   const c = useTheme();
@@ -95,6 +98,7 @@ export function IconButton({
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
       disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => [

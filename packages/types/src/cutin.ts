@@ -53,6 +53,8 @@ export interface Post {
   filterId?: string;
   /** 대표 컷(썸네일) 인덱스 — §6.3 */
   thumbnailIndex?: number;
+  /** 보관함에 담았는지 — §4.2-5 */
+  bookmarked?: boolean;
   /** 작성 시각(ISO) — 프레임 푸터 날짜 스탬프에 사용 */
   createdAt?: string;
 }

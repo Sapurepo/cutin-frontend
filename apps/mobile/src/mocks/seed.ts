@@ -21,6 +21,23 @@ export const me: UserSummary = {
 
 export const posts: Post[] = [
   {
+    id: "p0",
+    author: { name: "지민", handle: "cut_jimin", avatar: img("me99") },
+    timeAgo: "30분 전",
+    count: 4,
+    cuts: [img("m1"), img("m2"), img("m3"), img("m4")],
+    caption: "퇴근길에 혼자 네 컷",
+    reactions: [
+      { emoji: "🔥", count: 5 },
+      { emoji: "🙌", count: 1 },
+    ],
+    comments: [{ name: "수민", text: "표정 뭐야ㅋㅋ", timeAgo: "10분 전" }],
+    myReaction: null,
+    layout: "2x2",
+    frameId: "white",
+    createdAt: "2026-07-24T09:30:00.000Z",
+  },
+  {
     id: "p1",
     author: { name: "수민", handle: "sumin", avatar: img("sumin1") },
     timeAgo: "2시간 전",
@@ -45,6 +62,7 @@ export const posts: Post[] = [
     frameId: "noir",
     filterId: "sepia",
     createdAt: "2026-07-22T18:30:00.000Z",
+    bookmarked: true,
   },
   {
     id: "p2",

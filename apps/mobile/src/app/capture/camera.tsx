@@ -7,6 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { colors, radius, spacing } from "@cutin/tokens";
 import { font } from "@/theme/fonts";
 import { Button, IconButton } from "@/components/button";
+import { GlassSurface } from "@/components/glassSurface";
 import { ProgressDots } from "@/components/progressDots";
 import { useCaptureStore } from "@/stores/captureStore";
 
@@ -87,9 +88,13 @@ export default function CameraScreen() {
     <SafeAreaView style={styles.screen}>
       <View style={styles.top}>
         <IconButton icon="x" color="#FFFFFF" onPress={() => router.back()} />
-        <View style={styles.progressCapsule}>
+        <GlassSurface
+          style={styles.progressCapsule}
+          fallbackColor="rgba(255,255,255,0.12)"
+          colorScheme="dark"
+        >
           <ProgressDots total={count} current={done} />
-        </View>
+        </GlassSurface>
         <IconButton
           icon="switch-camera"
           color="#FFFFFF"
@@ -119,7 +124,12 @@ export default function CameraScreen() {
                 </Text>
               </View>
             ) : null}
-            <View style={styles.counterCapsule}>
+            <GlassSurface
+              style={styles.counterCapsule}
+              fallbackColor="rgba(10,10,11,0.4)"
+              effect="clear"
+              colorScheme="dark"
+            >
               <Text
                 style={{
                   fontFamily:
@@ -132,7 +142,7 @@ export default function CameraScreen() {
                   ? `${retakeIndex + 1}번째 컷 다시 찍기`
                   : `${Math.min(done + 1, count)} / ${count}`}
               </Text>
-            </View>
+            </GlassSurface>
           </>
         ) : (
           <View style={styles.permissionBox}>
@@ -222,10 +232,10 @@ const styles = StyleSheet.create({
     paddingVertical: spacing[3],
   },
   progressCapsule: {
-    backgroundColor: "rgba(255,255,255,0.12)",
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[1],
     borderRadius: radius.pill,
+    overflow: "hidden",
   },
   viewfinder: {
     flex: 1,
@@ -249,10 +259,10 @@ const styles = StyleSheet.create({
   counterCapsule: {
     position: "absolute",
     bottom: spacing[3],
-    backgroundColor: "rgba(10,10,11,0.4)",
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[1],
     borderRadius: radius.pill,
+    overflow: "hidden",
   },
   permissionBox: {
     alignItems: "center",
