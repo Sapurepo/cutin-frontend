@@ -8,6 +8,7 @@
     "dev": "turbo run dev",
     "dev:admin": "turbo run dev --filter=@cutin/admin",
     "dev:mobile": "turbo run dev --filter=@cutin/mobile",
+    "ios:mobile": "pnpm --filter @cutin/mobile ios",
     "build": "turbo run build",
     "lint": "eslint .",
     "typecheck": "turbo run typecheck",
